@@ -12,7 +12,7 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "@/components/ui/pagination";
+} from '@/components/ui/pagination';
 
 type AutocompleteInputProps = {
   onChange?: (value: string) => void;
@@ -26,7 +26,7 @@ const getSuggestions = async (input: string) => {
     },
     body: JSON.stringify({ input }),
   });
-  
+
   if (response.ok) {
     const data = await response.json();
     return data.matches;
@@ -46,7 +46,7 @@ const alternativeGetSuggestions = async (input: string) => {
     if (response.ok) {
       const data: { wordList: string[] } = await response.json();
       wordList = data.wordList;
-      wordList.forEach(word => {
+      wordList.forEach((word) => {
         const firstChar = word.charAt(0);
         if (!wordsMap[firstChar]) {
           wordsMap[firstChar] = [];
@@ -61,7 +61,7 @@ const alternativeGetSuggestions = async (input: string) => {
 
   const firstChar = input.charAt(0);
   if (wordsMap[firstChar]) {
-    return wordsMap[firstChar].filter(word => word.startsWith(input));
+    return wordsMap[firstChar].filter((word) => word.startsWith(input));
   }
 
   return [];
@@ -69,7 +69,11 @@ const alternativeGetSuggestions = async (input: string) => {
 
 const MAX_RESULTS_PER_PAGE = 10;
 
-const updateSuggestions = async (value: string, setSuggestions: (suggestions: string[]) => void, setPageIndex: (index: number) => void) => {
+const updateSuggestions = async (
+  value: string,
+  setSuggestions: (suggestions: string[]) => void,
+  setPageIndex: (index: number) => void,
+) => {
   if (value.trim() === '') {
     setSuggestions([]);
     setPageIndex(0);
@@ -89,7 +93,10 @@ export function AutocompleteInput({ onChange }: AutocompleteInputProps) {
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   const maxPages = Math.ceil(suggestions.length / MAX_RESULTS_PER_PAGE);
-  const paginatedSuggestions = suggestions.slice(pageIndex * MAX_RESULTS_PER_PAGE, (pageIndex + 1) * MAX_RESULTS_PER_PAGE);
+  const paginatedSuggestions = suggestions.slice(
+    pageIndex * MAX_RESULTS_PER_PAGE,
+    (pageIndex + 1) * MAX_RESULTS_PER_PAGE,
+  );
 
   const handleChange = (value: string) => {
     setInputValue(value);
@@ -101,7 +108,10 @@ export function AutocompleteInput({ onChange }: AutocompleteInputProps) {
 
   return (
     <div>
-      <Label htmlFor="autocomplete-input" className="block mb-2 text-sm font-medium text-gray-700">
+      <Label
+        htmlFor="autocomplete-input"
+        className="block mb-2 text-sm font-medium text-gray-700"
+      >
         Search Words:
       </Label>
       <Input
@@ -114,13 +124,13 @@ export function AutocompleteInput({ onChange }: AutocompleteInputProps) {
         aria-controls="autocomplete-suggestions"
       />
       <div role="region" id="autocomplete-suggestions" aria-live="polite">
-        { suggestions.length > 0 && (
+        {suggestions.length > 0 && (
           <>
             <div className="mt-2 border border-gray-300 rounded-md max-h-60 overflow-y-auto">
               {paginatedSuggestions.map((suggestion, index) => (
                 <div
                   key={index}
-                  className={ `p-2 hover:bg-gray-200 cursor-pointer${ suggestion === selectedItem ? ' bg-accent' : '' }` }
+                  className={`p-2 hover:bg-gray-200 cursor-pointer${suggestion === selectedItem ? ' bg-accent' : ''}`}
                   onClick={() => {
                     setSelectedItem(suggestion);
                     console.log(suggestion);
@@ -130,29 +140,33 @@ export function AutocompleteInput({ onChange }: AutocompleteInputProps) {
                 </div>
               ))}
             </div>
-            { ( suggestions.length > MAX_RESULTS_PER_PAGE || pageIndex > 0 ) && (
+            {(suggestions.length > MAX_RESULTS_PER_PAGE || pageIndex > 0) && (
               <Pagination>
                 <PaginationContent>
-                  { pageIndex > 0 && (
+                  {pageIndex > 0 && (
                     <PaginationItem>
-                      <PaginationPrevious onClick={() => setPageIndex(pageIndex - 1)} />
+                      <PaginationPrevious
+                        onClick={() => setPageIndex(pageIndex - 1)}
+                      />
                     </PaginationItem>
                   )}
                   <PaginationItem>
                     <PaginationLink isActive>
-                      { `${ pageIndex + 1 }` }
+                      {`${pageIndex + 1}`}
                     </PaginationLink>
                   </PaginationItem>
-                  { maxPages > pageIndex + 1 && (
+                  {maxPages > pageIndex + 1 && (
                     <PaginationItem>
-                      <PaginationNext onClick={() => setPageIndex(pageIndex + 1)} />
+                      <PaginationNext
+                        onClick={() => setPageIndex(pageIndex + 1)}
+                      />
                     </PaginationItem>
                   )}
                 </PaginationContent>
               </Pagination>
             )}
           </>
-        ) }
+        )}
       </div>
     </div>
   );
